@@ -1,9 +1,5 @@
 # FirstWave — Predictive EMS Staging Dashboard
 
-> **GT Hacklytics 2026** · Healthcare Track + SafetyKit: Best AI for Human Safety
->
-> *"Like a surfer paddling out ahead of the wave."*
-
 ---
 
 ## The Problem
