@@ -391,12 +391,10 @@ firstwave/
 │   └── test_artifacts.py       41-check artifact validation suite
 │
 ├── data/
-│   ├── mock_api_responses.json All endpoints mocked (frozen at Hour 0)
-│   ├── ems_stations.json       31 FDNY EMS station locations
-│   └── zone_centroids.json     31 dispatch zone centroids
-│
-├── PRD_v3.md                   Product Requirements Document v3
-└── devpost_strategy.md         Devpost submission content
+    ├── mock_api_responses.json All endpoints mocked (frozen at Hour 0)
+    ├── ems_stations.json       31 FDNY EMS station locations
+    └── zone_centroids.json     31 dispatch zone centroids
+
 ```
 
 ---
