@@ -3,6 +3,7 @@
 # FirstWave
 
 **Predictive EMS Staging Dashboard for NYC 911 Response**
+
 Built for Georgia Tech's Data Science Hackathon: Hackalytics '26
 
 <img src="dashboard.png" alt="FirstWave Dashboard" width="800"/>
