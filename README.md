@@ -1,12 +1,10 @@
 <div align="center">
 
-<img src="dashboard.png" alt="FirstWave Dashboard" width="800"/>
-
 # FirstWave
 
 **Predictive EMS Staging Dashboard for NYC 911 Response**
 
-*GT Hacklytics 2026 · Healthcare Track · SafetyKit: Best AI for Human Safety*
+<img src="dashboard.png" alt="FirstWave Dashboard" width="800"/>
 
 </div>
 
@@ -14,7 +12,7 @@
 
 ## The Problem
 
-New York City EMS responds to over **1.5 million 911 calls per year**. Despite that volume, ambulance deployment is still largely reactive — units sit at fixed stations until a call arrives, then race across the borough.
+New York City EMS responds to over **1.5 million 911 calls per year**. Despite that volume, ambulance deployment is still largely reactive  units sit at fixed stations until a call arrives, then race across the borough.
 
 The result:
 
@@ -30,13 +28,13 @@ For cardiac arrest, **every minute past 8 minutes reduces survival probability b
 
 The issue isn't a shortage of ambulances. **It's wrong placement.**
 
-Emergency demand is highly predictable — Friday evenings in the Bronx, summer weekends in Brooklyn — but the system doesn't act on those patterns ahead of time.
+Emergency demand is highly predictable  Friday evenings in the Bronx, summer weekends in Brooklyn  but the system doesn't act on those patterns ahead of time.
 
 ---
 
 ## The Solution
 
-**FirstWave** is a predictive staging dashboard for NYC EMS dispatchers. It forecasts where 911 calls will cluster over the next hour using historical incident patterns, weather, and temporal demand signals — then recommends optimal pre-positioning locations for idle ambulances **before those calls arrive**.
+**FirstWave** is a predictive staging dashboard for NYC EMS dispatchers. It forecasts where 911 calls will cluster over the next hour using historical incident patterns, weather, and temporal demand signals  then recommends optimal pre-positioning locations for idle ambulances **before those calls arrive**.
 
 ---
 
@@ -47,9 +45,9 @@ Computed from **28.7 million validated NYC EMS incidents (2019–2023)**:
 | Metric | Without FirstWave | With FirstWave |
 |---|---|---|
 | Incidents within 8-min clinical window | 64.7% | **86.0%** |
-| Median response time saved | — | **3 min 19 sec** |
+| Median response time saved |  | **3 min 19 sec** |
 | Bronx coverage (worst borough) | 48.2% | **96.7%** |
-| SVI Q4 (most vulnerable) savings | — | **299 seconds** |
+| SVI Q4 (most vulnerable) savings |  | **299 seconds** |
 
 The equity finding matters: FirstWave disproportionately benefits the city's most vulnerable neighborhoods because high-vulnerability zones overlap with highest-demand zones where staged ambulances are placed.
 
@@ -58,7 +56,7 @@ The equity finding matters: FirstWave disproportionately benefits the city's mos
 ## Features
 
 ### Demand Heatmap
-A live choropleth map colors all 31 NYC dispatch zones by predicted incident intensity — teal (low) through yellow/orange to red (critical). The forecast updates in real time as you change hour, day, weather, or ambulance count.
+A live choropleth map colors all 31 NYC dispatch zones by predicted incident intensity  teal (low) through yellow/orange to red (critical). The forecast updates in real time as you change hour, day, weather, or ambulance count.
 
 ### Watch the Wave ▶
 Hit the play button next to the hour slider and watch demand animate across 24 hours at 1.5-second intervals. The visual transition from a calm Monday 4AM to a red Friday 8PM is the core argument: demand is predictable, and staging should be proactive.
@@ -75,7 +73,7 @@ Compares actual historical response times against simulated drive times from sta
 ### AI Dispatcher
 A GPT-4o-mini-powered panel in the top-right corner of the dashboard. Two modes:
 - **Auto-briefing:** Generates a 3-sentence operational summary every time the map updates (1.5s debounce). Tells dispatchers which zone has peak demand, what the coverage improvement is, and one concrete recommendation.
-- **Interactive chat:** Describe any scenario in natural language. "Yankees game Friday night?" — the AI responds and updates the map's hour and day controls automatically. If the map changes, an **↩ Undo** button appears in the chat to revert.
+- **Interactive chat:** Describe any scenario in natural language. "Yankees game Friday night?", the AI responds and updates the map's hour and day controls automatically. If the map changes, an **↩ Undo** button appears in the chat to revert.
 
 ### Equity / SVI Layer
 A ZIP-level Social Vulnerability Index overlay in a purple gradient (transparent → dark purple for SVI 0→1). The impact panel breaks down response time savings by SVI quartile, proving the algorithm is fair as well as fast.
@@ -94,7 +92,7 @@ Click any zone on the map to open a detail panel with its 24-hour demand curve, 
 [ 28.7M NYC EMS Incidents (2005–2024) ]
          |
          v
-[ DuckDB Pipeline ] — 9 quality filters, weather merge, SVI join
+[ DuckDB Pipeline ]  9 quality filters, weather merge, SVI join
          |
          +-- zone_baselines.parquet     rolling demand avg per (zone, hour, dow)
          +-- zone_stats.parquet         per-zone historical response stats
@@ -103,7 +101,7 @@ Click any zone on the map to open a detail panel with its 24-hour demand curve, 
          +-- counterfactual_*.parquet   precomputed impact for 168 (hour × dow) combos
          |
          v
-[ FastAPI Backend ]  — artifacts loaded at startup, all endpoints < 300ms
+[ FastAPI Backend ]   artifacts loaded at startup, all endpoints < 300ms
     GET  /api/heatmap           31-zone demand forecast GeoJSON
     GET  /api/staging           K optimal staging locations GeoJSON
     GET  /api/counterfactual    coverage + time saved + by_borough + by_svi + by_zone
@@ -131,7 +129,7 @@ Click any zone on the map to open a detail panel with its 24-hour demand curve, 
 
 ## Machine Learning
 
-### Model A — XGBoost Demand Forecaster
+### Model A  XGBoost Demand Forecaster
 
 **Target:** `incident_count` (incidents per dispatch zone per hour)
 **Training:** 2019, 2021, 2022 (~5.6M clean incidents)
@@ -151,7 +149,7 @@ Click any zone on the map to open a detail panel with its 24-hour demand curve, 
 | `windspeed_10m` | km/h |
 | `is_severe_weather` | WMO severe weather code flag |
 | `svi_score` | CDC Social Vulnerability Index (0–1) |
-| `zone_baseline_avg` | **Rolling avg per (zone, hour, dow) — 47% feature importance** |
+| `zone_baseline_avg` | **Rolling avg per (zone, hour, dow)  47% feature importance** |
 | `high_acuity_ratio` | Historical % of severity codes 1+2 |
 | `held_ratio` | Historical % of held calls |
 | `is_holiday` | Federal holiday flag |
@@ -161,7 +159,7 @@ Click any zone on the map to open a detail panel with its 24-hour demand curve, 
 | `is_extreme_heat` | Temperature ≥ 35°C |
 | `subway_disruption_idx` | 0–1 MTA disruption level |
 
-### Model B — Borough-Fair Staging Optimizer
+### Model B  Borough-Fair Staging Optimizer
 
 Two-phase weighted K-Means:
 1. One staging point guaranteed per borough (equity constraint), placed at demand-weighted centroid
@@ -184,10 +182,10 @@ For each precomputed (hour, dow) combination:
 
 | Source | What We Used |
 |---|---|
-| [NYC Open Data — EMS Incident Dispatch Data](https://data.cityofnewyork.us/Public-Safety/EMS-Incident-Dispatch-Data/76xm-jjuj) | 28.7M rows, 2005–2024 |
-| [Open-Meteo Historical Weather API](https://archive-api.open-meteo.com) | Hourly temperature, precipitation, windspeed for NYC — free, no key |
+| [NYC Open Data  EMS Incident Dispatch Data](https://data.cityofnewyork.us/Public-Safety/EMS-Incident-Dispatch-Data/76xm-jjuj) | 28.7M rows, 2005–2024 |
+| [Open-Meteo Historical Weather API](https://archive-api.open-meteo.com) | Hourly temperature, precipitation, windspeed for NYC  free, no key |
 | [CDC Social Vulnerability Index](https://www.atsdr.cdc.gov/placeandhealth/svi/) | RPL_THEMES composite score per census tract, aggregated to dispatch zone |
-| [OpenStreetMap via OSMnx](https://osmnx.readthedocs.io) | Full NYC road network — 1,891 zone-pair drive times computed pre-hackathon |
+| [OpenStreetMap via OSMnx](https://osmnx.readthedocs.io) | Full NYC road network  1,891 zone-pair drive times computed pre-hackathon |
 
 All data sources are free and publicly available. No proprietary data.
 
@@ -212,7 +210,7 @@ df = df[
 ```
 
 - **96.2%** of rows have valid response time flags
-- 2020 excluded entirely (COVID anomaly — 1.42M rows, structurally different patterns)
+- 2020 excluded entirely (COVID anomaly  1.42M rows, structurally different patterns)
 - Result: 5.6M clean training rows, 1.5M clean holdout rows
 
 ---
@@ -223,8 +221,8 @@ df = df[
 
 - Python 3.11+
 - Node.js 18+
-- Docker (optional, for PostGIS zone boundary geometries — graceful fallback without it)
-- An OpenAI API key (optional, for AI Dispatcher — panel shows an informative error without it)
+- Docker (optional, for PostGIS zone boundary geometries  graceful fallback without it)
+- An OpenAI API key (optional, for AI Dispatcher  panel shows an informative error without it)
 
 ### 1. Backend
 
@@ -240,7 +238,7 @@ ARTIFACTS_DIR=./artifacts
 OPENAI_API_KEY=sk-...
 ```
 
-**Optional — PostGIS (for precise zone boundaries):**
+**Optional  PostGIS (for precise zone boundaries):**
 ```bash
 docker run --name firstwave-db \
   -e POSTGRES_DB=firstwave \
@@ -251,7 +249,7 @@ docker run --name firstwave-db \
 
 python3 backend/scripts/seed_zone_boundaries.py
 ```
-*Without Docker, zone geometries fall back to bounding-box approximations from mock data — the app still runs.*
+*Without Docker, zone geometries fall back to bounding-box approximations from mock data  the app still runs.*
 
 Start the server:
 ```bash
@@ -315,9 +313,9 @@ Staten Island: S1  S2  S3
 
 | Layer | Technology | Version |
 |---|---|---|
-| ML — Demand Forecasting | XGBoost | 2.0.3 |
-| ML — Staging Optimizer | scikit-learn (K-Means) | 1.4.1 |
-| ML — AI Dispatcher | OpenAI GPT-4o-mini | latest |
+| ML  Demand Forecasting | XGBoost | 2.0.3 |
+| ML  Staging Optimizer | scikit-learn (K-Means) | 1.4.1 |
+| ML  AI Dispatcher | OpenAI GPT-4o-mini | latest |
 | Spatial Routing | OSMnx + NetworkX | 1.9.1 / 3.3 |
 | Data Processing | DuckDB, pandas, pyarrow | 1.4+ / 2.2.1 / 16.0 |
 | Backend API | FastAPI + Uvicorn | 0.110.0 / 0.29.0 |
@@ -397,21 +395,8 @@ firstwave/
 │   ├── ems_stations.json       31 FDNY EMS station locations
 │   └── zone_centroids.json     31 dispatch zone centroids
 │
-├── CLAUDE.md                   Full technical spec and data dictionary
 ├── PRD_v3.md                   Product Requirements Document v3
 └── devpost_strategy.md         Devpost submission content
 ```
 
 ---
-
-## Team
-
-| Name | Role |
-|---|---|
-| **Ashwin Vijayakumar** | Backend Lead — FastAPI, XGBoost inference, PostGIS, counterfactual engine, AI Dispatcher endpoint |
-| **Vaibhav** | Frontend Lead + Integration — React dashboard, Mapbox, all UI components, equity layer, animations |
-| **Praneel** | Pipeline Lead — DuckDB pipeline, XGBoost training, drive-time matrix, counterfactual precomputation |
-| **Ansh** | PM + Demo — Devpost, pitch deck, demo video, EMS station data |
-
-**Hackathon:** GT Hacklytics 2026
-**Tracks:** Healthcare (primary) · SafetyKit: Best AI for Human Safety (secondary)
