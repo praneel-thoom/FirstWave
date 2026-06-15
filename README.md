@@ -1,4 +1,14 @@
-# FirstWave — Predictive EMS Staging Dashboard
+<div align="center">
+
+<img src="dashboard.png" alt="FirstWave Dashboard" width="800"/>
+
+# FirstWave
+
+**Predictive EMS Staging Dashboard for NYC 911 Response**
+
+*GT Hacklytics 2026 · Healthcare Track · SafetyKit: Best AI for Human Safety*
+
+</div>
 
 ---
 
