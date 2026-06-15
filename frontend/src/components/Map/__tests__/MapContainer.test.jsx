@@ -1,6 +1,16 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import MapContainer from '../MapContainer';
+
+function renderWithQuery(ui) {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+  return render(
+    <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>
+  );
+}
 
 const mockHeatmapData = {
   type: 'FeatureCollection',
@@ -22,7 +32,7 @@ const mockStagingData = {
 
 describe('MapContainer', () => {
   it('renders the map container div', () => {
-    render(
+    renderWithQuery(
       <MapContainer
         heatmapData={mockHeatmapData}
         stagingData={mockStagingData}
@@ -35,7 +45,7 @@ describe('MapContainer', () => {
   });
 
   it('renders choropleth when heatmap layer is visible', () => {
-    render(
+    renderWithQuery(
       <MapContainer
         heatmapData={mockHeatmapData}
         stagingData={mockStagingData}
@@ -48,7 +58,7 @@ describe('MapContainer', () => {
   });
 
   it('hides choropleth when heatmap layer is not visible', () => {
-    render(
+    renderWithQuery(
       <MapContainer
         heatmapData={mockHeatmapData}
         stagingData={mockStagingData}
@@ -61,7 +71,7 @@ describe('MapContainer', () => {
   });
 
   it('renders staging pins', () => {
-    render(
+    renderWithQuery(
       <MapContainer
         heatmapData={mockHeatmapData}
         stagingData={mockStagingData}
@@ -70,6 +80,6 @@ describe('MapContainer', () => {
         onZoneClick={() => {}}
       />
     );
-    expect(screen.getByTestId('marker')).toBeInTheDocument();
+    expect(screen.getAllByTestId('marker').length).toBeGreaterThan(0);
   });
 });

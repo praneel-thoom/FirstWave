@@ -39,11 +39,11 @@ describe('WeatherSelector', () => {
 
   it('shows temperature and precipitation for each preset', () => {
     render(<WeatherSelector value="none" onChange={() => {}} />);
-    // Clear: 15°C / 0mm
-    expect(screen.getByText('15°C / 0mm')).toBeInTheDocument();
-    // Light Rain: 12°C / 2mm
-    expect(screen.getByText('12°C / 2mm')).toBeInTheDocument();
-    // Heavy Storm: 8°C / 8mm
-    expect(screen.getByText('8°C / 8mm')).toBeInTheDocument();
+    // Clear: 22°C / 0mm
+    expect(screen.getByText('22°C / 0mm')).toBeInTheDocument();
+    // Light Rain: 10°C / 4mm
+    expect(screen.getByText('10°C / 4mm')).toBeInTheDocument();
+    // Heavy Storm: 4°C / 12mm
+    expect(screen.getByText('4°C / 12mm')).toBeInTheDocument();
   });
 });

@@ -17,7 +17,7 @@ const INITIAL_VIEW = {
   bearing: 0,
 };
 
-export default function MapContainer({ heatmapData, stagingData, layerVisibility, selectedZone, onZoneClick, ambulanceCount, counterfactualByZone, overlays }) {
+export default function MapContainer({ heatmapData, stagingData, layerVisibility, selectedZone, onZoneClick, ambulanceCount, counterfactualByZone, overlays = {} }) {
   const [hoverInfo, setHoverInfo] = useState(null);
   const [stationHover, setStationHover] = useState(null);
 

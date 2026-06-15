@@ -122,7 +122,7 @@ function SviLegend() {
   );
 }
 
-export default function OverlayPanel({ overlays, toggleOverlay }) {
+export default function OverlayPanel({ overlays = {}, toggleOverlay = () => {} }) {
   return (
     <div style={{
       flex: '0 0 200px',

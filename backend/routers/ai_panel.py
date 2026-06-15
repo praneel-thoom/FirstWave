@@ -4,19 +4,25 @@ import os
 import re
 
 from fastapi import APIRouter
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
 # ── Pydantic models ──────────────────────────────────────────────────────────
 
+class TopZone(BaseModel):
+    zone: str = "?"
+    borough: str = "?"
+    count: float = 0.0
+
+
 class ContextModel(BaseModel):
-    hour: int = 20
-    dow: int = 4
+    hour: int = Field(default=20, ge=0, le=23)
+    dow: int = Field(default=4, ge=0, le=6)
     weather: str = "none"
-    ambulances: int = 5
-    top_zones: list = []   # [{"zone": str, "borough": str, "count": float}]
+    ambulances: int = Field(default=5, ge=1, le=10)
+    top_zones: list[TopZone] = []
     coverage: dict = {}    # {"pct_static": float, "pct_staged": float, "median_saved_sec": float}
 
 
@@ -39,7 +45,7 @@ def _build_context_str(ctx: ContextModel) -> str:
     day_label = _DOW_LABELS[ctx.dow] if 0 <= ctx.dow <= 6 else f"day {ctx.dow}"
 
     zones_str = ", ".join(
-        f"Zone {z['zone']} ({z['borough']}): {z['count']:.1f} calls/hr"
+        f"Zone {z.zone} ({z.borough}): {z.count:.1f} calls/hr"
         for z in (ctx.top_zones or [])[:5]
     ) or "no zone data available"
 
@@ -71,12 +77,31 @@ def _extract_controls(text: str) -> tuple[str, dict | None]:
     try:
         raw = '{"controls":' + m.group(1) + '}'
         parsed = json.loads(raw)
-        controls = parsed.get("controls", {})
+        controls = _sanitize_controls(parsed.get("controls", {}))
         # Strip JSON block from reply
         clean = _CONTROLS_RE.sub("", text).strip()
         return clean, controls if controls else None
     except Exception:
         return text.strip(), None
+
+
+# Whitelist of controls the model may set, with valid ranges.
+# The LLM output is untrusted: clamp values so a bad generation can't push
+# out-of-range params into the dashboard (which would 422 every API call).
+_CONTROL_BOUNDS = {"hour": (0, 23), "dow": (0, 6), "ambulances": (1, 10), "month": (1, 12)}
+
+
+def _sanitize_controls(controls: dict) -> dict:
+    clean = {}
+    if not isinstance(controls, dict):
+        return clean
+    for key, (lo, hi) in _CONTROL_BOUNDS.items():
+        if key in controls:
+            try:
+                clean[key] = max(lo, min(hi, int(controls[key])))
+            except (TypeError, ValueError):
+                continue
+    return clean
 
 
 # ── Canned fallback (no API key) ────────────────────────────────────────────

@@ -19,14 +19,14 @@ describe('CoverageBars', () => {
     expect(screen.getByText('8-Minute Coverage')).toBeInTheDocument();
   });
 
-  it('renders Static Stations label', () => {
+  it('renders Without FirstWave label', () => {
     render(<CoverageBars data={mockData} />);
-    expect(screen.getByText('Static Stations')).toBeInTheDocument();
+    expect(screen.getByText('Without FirstWave')).toBeInTheDocument();
   });
 
-  it('renders FirstWave Staged label', () => {
+  it('renders With FirstWave label', () => {
     render(<CoverageBars data={mockData} />);
-    expect(screen.getByText('FirstWave Staged')).toBeInTheDocument();
+    expect(screen.getByText('With FirstWave')).toBeInTheDocument();
   });
 
   it('displays static percentage', () => {

@@ -149,27 +149,36 @@ def _populate_zone_geom_cache():
 
 # ── App setup ─────────────────────────────────────────────────────────────────
 
-app = FastAPI(
-    title="FirstWave API",
-    version="2.0.0",
-    description="Predictive ambulance staging dashboard — NYC EMS",
-)
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:3004", "http://localhost:5173", "http://localhost:5174"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+from contextlib import asynccontextmanager
 
 
-@app.on_event("startup")
-async def startup_event():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     _load_mock_data()
     load_all_artifacts()
     _populate_zone_geom_cache()
     logger.info("FirstWave API startup complete")
+    yield
+
+
+app = FastAPI(
+    title="FirstWave API",
+    version="2.0.0",
+    description="Predictive ambulance staging dashboard — NYC EMS",
+    lifespan=lifespan,
+)
+
+# Comma-separated list, e.g. ALLOWED_ORIGINS=http://localhost:3000,https://firstwave.example.com
+_DEFAULT_ORIGINS = "http://localhost:3000,http://localhost:3004,http://localhost:5173,http://localhost:5174"
+ALLOWED_ORIGINS = [o.strip() for o in os.getenv("ALLOWED_ORIGINS", _DEFAULT_ORIGINS).split(",") if o.strip()]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=ALLOWED_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 # ── Routers ───────────────────────────────────────────────────────────────────
@@ -205,6 +214,13 @@ async def health():
 async def reload_artifacts():
     load_all_artifacts()
     _populate_zone_geom_cache()
+
+    # Clear computation caches — they hold results built from the old artifacts
+    from routers.staging import _cached_heatmap_and_staging
+    from routers.counterfactual import _compute_dynamic_counterfactual
+    _cached_heatmap_and_staging.cache_clear()
+    _compute_dynamic_counterfactual.cache_clear()
+
     return {
         "status": "reloaded",
         "artifacts": {

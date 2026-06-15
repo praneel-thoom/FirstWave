@@ -321,8 +321,7 @@ async def get_counterfactual(
     if ARTIFACTS.get("demand_model") is not None and ARTIFACTS.get("baselines") is not None:
         try:
             result = await asyncio.wait_for(
-                asyncio.get_event_loop().run_in_executor(
-                    None,
+                asyncio.to_thread(
                     lambda: _compute_dynamic_counterfactual(
                         hour, dow, month,
                         round(temperature, 1), round(precipitation, 1), round(windspeed, 1),

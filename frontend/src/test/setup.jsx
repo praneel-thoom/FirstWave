@@ -21,6 +21,8 @@ vi.mock('react-map-gl', () => ({
   Marker: ({ children, longitude, latitude }) => (
     <div data-testid="marker" data-lng={longitude} data-lat={latitude}>{children}</div>
   ),
+  Popup: ({ children }) => <div data-testid="popup">{children}</div>,
+  useMap: () => ({ current: null }),
 }));
 
 // Filter out non-DOM props to avoid React warnings

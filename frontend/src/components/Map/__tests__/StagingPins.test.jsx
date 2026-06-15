@@ -30,10 +30,11 @@ describe('StagingPins', () => {
     expect(container.innerHTML).toBe('');
   });
 
-  it('renders markers when showPins is true', () => {
-    render(<StagingPins data={mockStagingData} showPins={true} showCoverage={false} />);
+  it('renders zone pills and ambulance dots when showPins is true', () => {
+    render(<StagingPins data={mockStagingData} showPins={true} showCoverage={false} ambulanceCount={3} />);
+    // 2 zone label pills + 3 ambulance dots = 5 markers
     const markers = screen.getAllByTestId('marker');
-    expect(markers.length).toBe(2);
+    expect(markers.length).toBe(5);
   });
 
   it('does not render markers when showPins is false', () => {
@@ -53,12 +54,13 @@ describe('StagingPins', () => {
     expect(screen.queryByTestId('source-coverage-circles')).not.toBeInTheDocument();
   });
 
-  it('renders ambulance emoji inside markers', () => {
-    render(<StagingPins data={mockStagingData} showPins={true} showCoverage={false} />);
-    const markers = screen.getAllByTestId('marker');
-    markers.forEach((m) => {
-      expect(m.textContent).toContain('🚑');
-    });
+  it('renders zone pill labels with allocation counts', () => {
+    render(<StagingPins data={mockStagingData} showPins={true} showCoverage={false} ambulanceCount={3} />);
+    expect(screen.getByText('Z1')).toBeInTheDocument();
+    expect(screen.getByText('Z2')).toBeInTheDocument();
+    // 3 ambulances over 2 clusters: highest-demand cluster gets 2, the other 1
+    expect(screen.getByText('2')).toBeInTheDocument();
+    expect(screen.getByText('1')).toBeInTheDocument();
   });
 
   it('passes correct coordinates to markers', () => {

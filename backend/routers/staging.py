@@ -56,8 +56,7 @@ async def get_staging(
 
     try:
         staging_points = await asyncio.wait_for(
-            asyncio.get_event_loop().run_in_executor(
-                None,
+            asyncio.to_thread(
                 lambda: _cached_heatmap_and_staging(
                     hour, dow, month,
                     round(temperature, 1), round(precipitation, 1), round(windspeed, 1),

@@ -73,9 +73,9 @@ def _build_heatmap_from_predictions(
     for zone, count in predicted_counts.items():
         normalized = (count - min_count) / spread
 
-        svi = SVI_DEFAULTS[zone]
-        high_acuity = HIGH_ACUITY_DEFAULTS[zone]
-        avg_response = AVG_RESPONSE_DEFAULTS[zone]
+        svi = SVI_DEFAULTS.get(zone, 0.5)
+        high_acuity = HIGH_ACUITY_DEFAULTS.get(zone, 0.22)
+        avg_response = AVG_RESPONSE_DEFAULTS.get(zone, 540)
 
         if zone_stats_df is not None:
             row = zone_stats_df[zone_stats_df["INCIDENT_DISPATCH_AREA"] == zone]
@@ -93,8 +93,8 @@ def _build_heatmap_from_predictions(
             "type": "Feature",
             "properties": {
                 "zone": zone,
-                "borough": ZONE_BOROUGH[zone],
-                "zone_name": ZONE_NAMES[zone],
+                "borough": ZONE_BOROUGH.get(zone, "UNKNOWN"),
+                "zone_name": ZONE_NAMES.get(zone, zone),
                 "predicted_count": round(count, 2),
                 "normalized_intensity": round(normalized, 4),
                 "svi_score": svi,
@@ -135,8 +135,7 @@ async def get_heatmap(
         forecaster = DemandForecaster(ARTIFACTS["demand_model"])
 
         predicted_counts = await asyncio.wait_for(
-            asyncio.get_event_loop().run_in_executor(
-                None,
+            asyncio.to_thread(
                 lambda: forecaster.predict_all_zones(
                     hour, dow, month,
                     temperature, precipitation, windspeed,

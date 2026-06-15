@@ -37,8 +37,9 @@ describe('ImpactPanel', () => {
     expect(screen.getByText('Response Time Distribution')).toBeInTheDocument();
   });
 
-  it('renders equity impact section', () => {
+  it('renders overlay panel section', () => {
     render(<ImpactPanel data={mockData} isLoading={false} />);
-    expect(screen.getByText('Equity Impact (SVI)')).toBeInTheDocument();
+    // OverlayPanel is the third column of ImpactPanel
+    expect(screen.getByText('Equity (SVI)')).toBeInTheDocument();
   });
 });

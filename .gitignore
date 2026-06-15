@@ -43,3 +43,15 @@ frontend/dist/
 
 # Claude Code internal
 .claude/settings.local.json
+
+# Internal planning and agent scaffolding
+agents/
+docs/
+claude.md
+README_WORKSPACE.md
+devpost_strategy.md
+hackathon_strategy.md
+heatmap_integration_plan.md
+new_priority.md
+prd_v2.md
+PRD_v3.md
